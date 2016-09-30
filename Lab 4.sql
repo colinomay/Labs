@@ -26,9 +26,9 @@ order by pid DESC;
  
 select cid, name
 from customers
-where cid in (select cid
+where cid not in (select cid
 			  from orders
-			  where aid != 'a03'
+			  where aid = 'a03'
              );                                                       
 
 --4. Get the ids of customers who ordered both product p01 and p07.
@@ -44,7 +44,7 @@ where pid = 'p07';
 --5. Get the ids of products not ordered by any customers who placed any order through agent 
 --a08 in pid order from highest to lowest.
 
-select pid
+select distinct pid
 from orders
 where cid not in (select cid
 			   from orders
@@ -67,12 +67,13 @@ where cid in (select cid
              
 --7. Get all customers who have the same discount as that of any customers in Dallas or London
 
-select discount
-from customers
-where city = 'Dallas' or 'London'
-	intersect
 select *
 from customers
+where city = 'Dallas' AND city='London' and discount in (
+    														select discount
+    														from customers
+    														where city='Dallas' or city='London'
+														);
 
 --8. Check constraints specifies a requirement that must be met by each row in a datbase table. Check constraints 
 --are expressed through predicates. It can refer to a single column or mutiple columns. The result of the 
